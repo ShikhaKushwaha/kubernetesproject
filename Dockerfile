@@ -1,28 +1,17 @@
-# Use CentOS as the base image
-FROM centos:latest
+#This is a sample Image
+FROM ubuntu
+MAINTAINER demousr@gmail.com
 
-# Install Nginx and other dependencies
-RUN yum update -y && \
-    yum install -y epel-release && \
-    yum install -y nginx && \
-    yum clean all && \
-    rm -rf /var/cache/yum
 
-# Copy the Nginx configuration file
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy the source code into the container
-COPY loxury.zip /usr/share/nginx/html/
-
-# Extract the source code
-RUN cd /usr/share/nginx/html/ && \
-    unzip loxury.zip && \
-    mv loxury/* . && \
-    rm -rf loxury loxury.zip
-
-# Expose the default Nginx port
-EXPOSE 80
-
-# Start Nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+RUN apt-get update
+RUN apt-get install nginx -y
+RUN apt-get install zip -y
+RUN apt-get install unzip -y
+ADD https://www.free-cs.com/assets/files/free-css-templates/download/page258/loxury.zip /var/www/html/
+WORKDIR /var/www/html
+RUN unzip loxury.zip
+RUN cp -rvf loxury/*
+RUN rm -rf loxury loxury.zip
+CMD ["/usr/sbin/httpd:, "-D", "FOREGROUND"]
+EXPOSE 80 
 
